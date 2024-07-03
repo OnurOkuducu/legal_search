@@ -2,6 +2,8 @@ import { Row, Col } from "antd";
 import { withTranslation, TFunction } from "react-i18next";
 import { SvgIcon } from "../../common/SvgIcon";
 import Container from "../../common/Container";
+import Typography from "@mui/material/Typography";
+import { Box } from "@mui/material";
 
 import i18n from "i18next";
 import {
@@ -47,9 +49,94 @@ const Footer = ({ t }: { t: TFunction }) => {
 
   return (
     <>
-      <FooterSection>
-        <Container>
-          <Row justify="space-between">
+      <Extra>
+        <Container border={true}>
+          <Row
+            justify="center"
+            align="middle"
+            style={{ paddingTop: "3rem", textAlign: "center" }}
+          >
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                height: "5vh", // Optional: to center vertically within the viewport
+              }}
+            >
+              <NavLink to="/" onClick={() => window.scrollTo(0, 0)}>
+                <LogoContainer>
+                  <Typography
+                    component="h1"
+                    sx={{
+                      fontSize: "2.5rem",
+                      color: "black",
+                      fontFamily: "'Playwrite FR Moderne', cursive",
+                    }}
+                  >
+                    {"Legalli"}
+                  </Typography>
+                  <SvgIcon src="legal_black.svg" width="80px" height="51px" />
+                </LogoContainer>
+              </NavLink>
+              <Typography
+                component="h1"
+                sx={{
+                  fontSize: "1rem",
+                  color: "black",
+                  fontFamily: "'Playwrite FR Moderne', cursive",
+                  mr: 6,
+                  ml: 3,
+                }}
+              >
+                {"2024"}
+              </Typography>
+            </Box>
+            <Box></Box>
+          </Row>
+        </Container>
+      </Extra>
+    </>
+  );
+};
+
+export default withTranslation()(Footer);
+/**
+ *         <FooterContainer>
+                <a
+                  href="https://ko-fi.com/Y8Y7H8BNJ"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <img
+                    height="36"
+                    style={{ border: 0, height: 36 }}
+                    src="https://storage.ko-fi.com/cdn/kofi3.png?v=3"
+                    alt="Buy Me a Coffee at ko-fi.com"
+                  />
+                </a>
+              </FooterContainer>
+
+              
+   <SocialLink
+                href="https://github.com/Adrinlol/create-react-app-adrinlol"
+                src="github.svg"
+              />
+              <SocialLink
+                href="https://twitter.com/Adrinlolx"
+                src="twitter.svg"
+              />
+              <SocialLink
+                href="https://www.linkedin.com/in/lasha-kakabadze/"
+                src="linkedin.svg"
+              />
+              <SocialLink
+                href="https://medium.com/@lashakakabadze/"
+                src="medium.svg"
+              />
+              
+
+              <Row justify="space-between">
             <Col lg={10} md={10} sm={12} xs={12}>
               <Language>{t("Contact")}</Language>
               <Large to="/">{t("Tell us everything")}</Large>
@@ -108,60 +195,8 @@ const Footer = ({ t }: { t: TFunction }) => {
               </LanguageSwitchContainer>
             </Col>
           </Row>
-        </Container>
-      </FooterSection>
-      <Extra>
-        <Container border={true}>
-          <Row
-            justify="space-between"
-            align="middle"
-            style={{ paddingTop: "3rem" }}
-          >
-            <NavLink to="/">
-              <LogoContainer>
-                <SvgIcon
-                  src="logo.svg"
-                  aria-label="homepage"
-                  width="101px"
-                  height="64px"
-                />
-              </LogoContainer>
-            </NavLink>
-            <FooterContainer>
-              <SocialLink
-                href="https://github.com/Adrinlol/create-react-app-adrinlol"
-                src="github.svg"
-              />
-              <SocialLink
-                href="https://twitter.com/Adrinlolx"
-                src="twitter.svg"
-              />
-              <SocialLink
-                href="https://www.linkedin.com/in/lasha-kakabadze/"
-                src="linkedin.svg"
-              />
-              <SocialLink
-                href="https://medium.com/@lashakakabadze/"
-                src="medium.svg"
-              />
-              <a
-                href="https://ko-fi.com/Y8Y7H8BNJ"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <img
-                  height="36"
-                  style={{ border: 0, height: 36 }}
-                  src="https://storage.ko-fi.com/cdn/kofi3.png?v=3"
-                  alt="Buy Me a Coffee at ko-fi.com"
-                />
-              </a>
-            </FooterContainer>
-          </Row>
-        </Container>
-      </Extra>
-    </>
-  );
-};
 
-export default withTranslation()(Footer);
+                <FooterSection>
+        <Container></Container>
+      </FooterSection>
+ */

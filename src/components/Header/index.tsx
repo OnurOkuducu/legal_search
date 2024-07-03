@@ -1,9 +1,11 @@
 import { useState } from "react";
+import { useHistory } from "react-router-dom";
 import { Row, Col, Drawer } from "antd";
 import { withTranslation, TFunction } from "react-i18next";
-import Container from "../../common/Container";
+import Container from "@mui/material/Container";
+import Typography from "@mui/material/Typography";
 import { SvgIcon } from "../../common/SvgIcon";
-import { Button } from "../../common/Button";
+import Button from "@mui/material/Button";
 import {
   HeaderSection,
   LogoContainer,
@@ -18,6 +20,14 @@ import {
 
 const Header = ({ t }: { t: TFunction }) => {
   const [visible, setVisibility] = useState(false);
+  const history = useHistory();
+
+  const handleClickRegister = () => {
+    history.push("/register");
+  };
+  const handleClickLogin = () => {
+    history.push("/login");
+  };
 
   const toggleButton = () => {
     setVisibility(!visible);
@@ -33,22 +43,12 @@ const Header = ({ t }: { t: TFunction }) => {
     };
     return (
       <>
-        <CustomNavLinkSmall onClick={() => scrollTo("about")}>
-          <Span>{t("About")}</Span>
+        {" "}
+        <CustomNavLinkSmall onClick={() => scrollTo("pricing")}>
+          <Span>{t("Paketlerimiz")}</Span>
         </CustomNavLinkSmall>
-        <CustomNavLinkSmall onClick={() => scrollTo("mission")}>
-          <Span>{t("Mission")}</Span>
-        </CustomNavLinkSmall>
-        <CustomNavLinkSmall onClick={() => scrollTo("product")}>
-          <Span>{t("Product")}</Span>
-        </CustomNavLinkSmall>
-        <CustomNavLinkSmall
-          style={{ width: "180px" }}
-          onClick={() => scrollTo("contact")}
-        >
-          <Span>
-            <Button>{t("Contact")}</Button>
-          </Span>
+        <CustomNavLinkSmall onClick={() => scrollTo("sss")}>
+          <Span>{t("SSS")}</Span>
         </CustomNavLinkSmall>
       </>
     );
@@ -56,17 +56,46 @@ const Header = ({ t }: { t: TFunction }) => {
 
   return (
     <HeaderSection>
-      <Container>
+      <Container
+        sx={(theme) => ({
+          display: "flex",
+          alignItems: "center",
+          justifyContent: {
+            xs: "space-between", // Center items on extra-small screens
+            sm: "space-between", // Space between items on small screens and larger
+            md: "space-between", // width for medium screens
+            lg: "space-between", // width for large screens
+            xl: "space-between", // width for extra-large screens
+          },
+          flexShrink: 0,
+          borderRadius: "999px",
+          maxHeight: {
+            xs: 40, // maxHeight for extra-small screens
+            sm: 50, // maxHeight for small screens and up
+          },
+          width: "100%",
+          borderColor: "divider",
+        })}
+      >
         <Row justify="space-between">
           <LogoContainer to="/" aria-label="homepage">
-            <SvgIcon src="logo.svg" width="101px" height="64px" />
+            <Typography
+              component="h1"
+              sx={{
+                fontSize: "2.5rem",
+                color: "white",
+                fontFamily: "'Playwrite FR Moderne', cursive",
+              }}
+            >
+              {"Legalli"}
+            </Typography>
+
+            <SvgIcon src="legal.svg" width="80px" height="51px" />
           </LogoContainer>
+
           <NotHidden>
             <MenuItem />
           </NotHidden>
-          <Burger onClick={toggleButton}>
-            <Outline />
-          </Burger>
         </Row>
         <Drawer closable={false} open={visible} onClose={toggleButton}>
           <Col style={{ marginBottom: "2.5rem" }}>
@@ -87,3 +116,46 @@ const Header = ({ t }: { t: TFunction }) => {
 };
 
 export default withTranslation()(Header);
+/*
+
+        <CustomNavLinkSmall onClick={() => scrollTo("communication")}>
+          <Span>{t("İletişim")}</Span>
+        </CustomNavLinkSmall>
+
+        
+          <Burger onClick={toggleButton}>
+            <Outline />
+          </Burger>
+
+          
+<CustomNavLinkSmall
+          style={{ width: "100px" }}
+          onClick={handleClickLogin}
+        >
+          <Span>
+            <Button
+              sx={{
+                alignItems: "center",
+                color: "white",
+                backgroundColor: "#98DED9",
+                "&:hover": { backgroundColor: "#204969" },
+              }}
+            >
+              {t("Üye Girişi")}
+            </Button>
+          </Span>
+        </CustomNavLinkSmall>
+        <CustomNavLinkSmall onClick={handleClickRegister}>
+          <Span>
+            <Button
+              sx={{
+                color: "white",
+                backgroundColor: "#98DED9",
+                "&:hover": { backgroundColor: "#204969" },
+              }}
+            >
+              {t("Üye Ol")}
+            </Button>
+          </Span>
+        </CustomNavLinkSmall>
+         */

@@ -6,14 +6,9 @@ export const HeaderSection = styled("header")`
   padding: 0.5rem 0.5rem;
   background-color: #11698e;
   margin-top: 1rem;
-  margin-left: 10rem;
-  margin-right: 10rem;
+  margin-left: 5rem;
+  margin-right: 5rem;
   border-radius: 30px;
-
-  @media (max-width: 600px) {
-    margin-left: 2rem;
-    margin-right: 2rem;
-  }
 
   .ant-row-space-between {
     align-items: center;
@@ -94,7 +89,7 @@ export const Span = styled("span")`
   cursor: pointer;
   transition: all 0.3s ease-in-out;
   border-radius: 50px;
-  font-weight: bold;
+
   &:hover,
   &:active,
   &:focus {
