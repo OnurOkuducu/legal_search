@@ -79,7 +79,17 @@ export default function Pricing({ id }: PricingProps) {
             mt: 2,
           }}
         >
-          Bütün hizmetlerimiz kısıtlı bir süre için tamamen ücretsizdir.
+          Bütün hizmetlerimiz{" "}
+          <Box
+            component="span"
+            sx={{
+              textDecoration: "underline",
+              fontSize: "larger",
+            }}
+          >
+            TAMAMEN
+          </Box>{" "}
+          ücretsizdir.
         </Typography>
       </Box>
     </Container>

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import AddKeyword from "../../components/AddKeyword";
 import { Container, Textarea, Button } from "./styles";
 import {
@@ -11,17 +11,37 @@ import {
   IconButton,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
+import ReCAPTCHA from "react-google-recaptcha";
 import FilterListIcon from "@mui/icons-material/FilterList"; // Import the filter icon
+
+const backend_domain = process.env.REACT_APP_BACKEND_DOMAIN || "default";
+const captcha_key = process.env.REACT_APP_CAPTCHA_KEY || "default";
 
 const SearchBar = ({
   onSearch,
 }: {
-  onSearch: (query: string, keyword: string[]) => void;
+  onSearch: (query: string, keyword: string[], captcha: string | null) => void;
 }) => {
   const [query, setQuery] = useState("");
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+  const [showCaptcha, setShowCaptcha] = useState<boolean>(false);
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
   const [open, setOpen] = useState(false);
   const [keywords, setKeywords] = useState([""]);
+
+  useEffect(() => {
+    const requestCountString = localStorage.getItem("requestCount") || "0";
+    const requestCount = parseInt(requestCountString, 10); // Convert string to number
+    if (requestCount === 0 || requestCount % 6 === 0) {
+      setShowCaptcha(true);
+    }
+  }, []);
+
+  const onCaptchaChange = (token: string | null) => {
+    setCaptchaToken(token);
+    setShowCaptcha(false);
+  };
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -45,11 +65,6 @@ const SearchBar = ({
   };
 
   const handleKeywordSearch = () => {
-    // Implement your keyword search logic here
-    console.log(
-      "Keywords:",
-      keywords.filter((keyword) => keyword.trim() !== ""),
-    );
     handleClose();
   };
 
@@ -58,8 +73,37 @@ const SearchBar = ({
   };
 
   const handleSearch = () => {
+    const requestCount = parseInt(
+      localStorage.getItem("requestCount") || "0",
+      10,
+    );
+
+    if (requestCount === 0 || requestCount % 10 === 0) {
+      setShowCaptcha(true);
+      if (!captchaToken) {
+        alert("Please complete the CAPTCHA");
+        return;
+      }
+    } else {
+      setShowCaptcha(false);
+    }
+
+    // Increment and store the request count
+    localStorage.setItem("requestCount", (requestCount + 1).toString());
+
     const keywordList = keywords.filter((keyword) => keyword.trim() !== "");
-    onSearch(query, keywordList);
+    setIsSubmitting(true);
+    onSearch(query, keywordList, captchaToken);
+    setIsSubmitting(false);
+  };
+
+  const handleDialogClose = (
+    event: React.MouseEvent,
+    reason: "backdropClick" | "escapeKeyDown",
+  ) => {
+    if (reason !== "backdropClick") {
+      setShowCaptcha(false);
+    }
   };
 
   return (
@@ -92,7 +136,14 @@ const SearchBar = ({
         >
           <FilterListIcon />
         </IconButton>
-        <Button onClick={handleSearch}>Emsal Karar Ara</Button>
+        <Dialog open={showCaptcha} onClose={handleDialogClose}>
+          <DialogContent>
+            <ReCAPTCHA sitekey={captcha_key} onChange={onCaptchaChange} />
+          </DialogContent>
+        </Dialog>
+        <Button onClick={handleSearch} disabled={isSubmitting}>
+          Emsal Karar Ara
+        </Button>
       </div>
       <AddKeyword
         open={open}

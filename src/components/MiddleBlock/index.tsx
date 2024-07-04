@@ -8,6 +8,11 @@ import { useHistory } from "react-router-dom";
 import axios from "axios";
 const Search = lazy(() => import("../../components/SearchBar"));
 
+const backend_domain = process.env.REACT_APP_BACKEND_DOMAIN || "default";
+const captcha_key = process.env.REACT_APP_CAPTCHA_KEY || "default";
+
+console.log(backend_domain);
+
 interface MiddleBlockProps {
   title: string;
   content: string;
@@ -25,16 +30,21 @@ const MiddleBlock = ({
 }: MiddleBlockProps) => {
   const history = useHistory();
 
-  const handleSearch = async (query: string, keywords: string[]) => {
+  const handleSearch = async (
+    query: string,
+    keywords: string[],
+    captcha: string | null,
+  ) => {
     const options = {
       method: "POST",
-      url: "https://9d641738-4bde-4795-a50f-bd46a82c0a1d-00-2r4sm0gkoe1kf.picard.replit.dev/get_similar",
+      url: backend_domain + "/get_similar",
       headers: {
         "Content-Type": "application/json",
       },
       data: {
         text: query,
         keywords: keywords,
+        captcha: captcha,
         page: 0,
       },
     };

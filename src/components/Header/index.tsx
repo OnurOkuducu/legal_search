@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useHistory } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 import { Row, Col, Drawer } from "antd";
 import { withTranslation, TFunction } from "react-i18next";
 import Container from "@mui/material/Container";
@@ -21,6 +21,7 @@ import {
 const Header = ({ t }: { t: TFunction }) => {
   const [visible, setVisibility] = useState(false);
   const history = useHistory();
+  const location = useLocation();
 
   const handleClickRegister = () => {
     history.push("/register");
@@ -35,12 +36,17 @@ const Header = ({ t }: { t: TFunction }) => {
 
   const MenuItem = () => {
     const scrollTo = (id: string) => {
-      const element = document.getElementById(id) as HTMLDivElement;
-      element.scrollIntoView({
-        behavior: "smooth",
-      });
-      setVisibility(false);
+      if (location.pathname !== "/") {
+        history.push("/");
+      } else {
+        const element = document.getElementById(id) as HTMLDivElement;
+        element.scrollIntoView({
+          behavior: "smooth",
+        });
+        setVisibility(false);
+      }
     };
+
     return (
       <>
         {" "}

@@ -1,4 +1,4 @@
-import { lazy, useState } from "react";
+import { lazy, useState, useEffect } from "react";
 import { useLocation, useHistory } from "react-router-dom";
 import {
   Container,
@@ -8,15 +8,27 @@ import {
   IconButton,
   InputAdornment,
   Button,
+  Dialog,
+  DialogContent,
+  DialogTitle,
 } from "@mui/material";
-import { handleNewSearch, handleNewLoadMore } from "../../crud/functions";
+import ReCAPTCHA from "react-google-recaptcha";
 
+import {
+  handleNewSearch,
+  handleNewLoadMore,
+  SearchPageHandleNewSearh,
+} from "../../crud/functions";
+import { CircularProgress } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search"; // You can replace this with your binocular icon
 import axios from "axios";
 import FilterListIcon from "@mui/icons-material/FilterList"; // Import the filter icon
 import AddKeyword from "../../components/AddKeyword";
 const SearchContainer = lazy(() => import("../../components/SearchContainer"));
 const Search = lazy(() => import("../../components/SearchBar"));
+
+const backend_domain = process.env.REACT_APP_BACKEND_DOMAIN || "default";
+const captcha_key = process.env.REACT_APP_CAPTCHA_KEY || "default";
 
 //const Container = lazy(() => import("../../common/Container"));
 interface Payload {
@@ -64,10 +76,66 @@ const SearchResults = () => {
   const [currentPage, setCurrentPage] = useState(0);
   const [open, setOpen] = useState(false);
   const [keywords, setKeywords] = useState(state.searchData.keywords);
+  const [loading, setLoading] = useState(false);
 
-  const handleSearch = () => {
-    handleNewSearch(query, keywords, history);
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+  const [showCaptcha, setShowCaptcha] = useState<boolean>(false);
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+
+  const handleSearch = async () => {
+    setLoading(true);
+    const deneme = await SearchPageHandleNewSearh(
+      query,
+      keywords,
+      captchaToken,
+    );
+    setLoading(false);
+    setCurrentResults(deneme);
+    setCurrentPage(0);
+    const requestCount = parseInt(
+      localStorage.getItem("requestCount") || "0",
+      10,
+    );
+    localStorage.setItem("requestCount", (requestCount + 1).toString());
   };
+  useEffect(() => {
+    const requestCountString = localStorage.getItem("requestCount") || "0";
+    console.log(requestCountString);
+    const requestCount = parseInt(requestCountString, 10); // Convert string to number
+    if (requestCount === 0 || requestCount % 6 === 0) {
+      setShowCaptcha(true);
+    }
+
+    if (loading) {
+      const timeoutId = setTimeout(() => {
+        setLoading(false);
+      }, 5000); // clear loading state after 2 seconds
+    }
+  }, [loading]);
+
+  const onCaptchaChange = (token: string | null) => {
+    setCaptchaToken(token);
+    setShowCaptcha(false);
+  };
+
+  const handleDialogClose = (
+    event: React.MouseEvent,
+    reason: "backdropClick" | "escapeKeyDown",
+  ) => {
+    if (reason !== "backdropClick") {
+      setShowCaptcha(false);
+    }
+  };
+  if (loading) {
+    return (
+      <div style={{ display: "flex", justifyContent: "center" }}>
+        <CircularProgress
+          size="10rem"
+          style={{ marginTop: 200, marginBottom: 400 }}
+        />
+      </div>
+    );
+  }
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -91,22 +159,24 @@ const SearchResults = () => {
   };
 
   const handleKeywordSearch = () => {
-    // Implement your keyword search logic here
-    console.log(
-      "Keywords:",
-      keywords.filter((keyword) => keyword.trim() !== ""),
-    );
     handleClose();
   };
 
   const handleLoadMore = async () => {
+    const requestCount = parseInt(
+      localStorage.getItem("requestCount") || "0",
+      10,
+    );
+
     const newPageNum = currentPage + 10;
     const results = await handleNewLoadMore(
       prev_query,
       state.searchData.keywords,
+      captchaToken,
       newPageNum,
     );
     setCurrentPage(currentPage + 10);
+    localStorage.setItem("requestCount", (requestCount + 1).toString());
     setCurrentResults((prevResults) => [...prevResults, ...results]);
   };
 
@@ -151,6 +221,11 @@ const SearchResults = () => {
             ),
           }}
         />
+        <Dialog open={showCaptcha} onClose={handleDialogClose}>
+          <DialogContent>
+            <ReCAPTCHA sitekey={captcha_key} onChange={onCaptchaChange} />
+          </DialogContent>
+        </Dialog>
       </Box>
       {currentResults ? (
         currentResults.map((result: Results, index: number) => (
