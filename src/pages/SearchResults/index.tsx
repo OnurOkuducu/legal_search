@@ -15,7 +15,7 @@ import {
 import ReCAPTCHA from "react-google-recaptcha";
 
 import {
-  handleNewSearch,
+  CaptchaVerification,
   handleNewLoadMore,
   SearchPageHandleNewSearh,
 } from "../../crud/functions";
@@ -77,6 +77,7 @@ const SearchResults = () => {
   const [open, setOpen] = useState(false);
   const [keywords, setKeywords] = useState(state.searchData.keywords);
   const [loading, setLoading] = useState(false);
+  const [isLoadMoreLoading, setIsLoadMoreLoading] = useState(false);
 
   const [captchaToken, setCaptchaToken] = useState<string | null>(null);
   const [showCaptcha, setShowCaptcha] = useState<boolean>(false);
@@ -113,8 +114,9 @@ const SearchResults = () => {
     }
   }, [loading]);
 
-  const onCaptchaChange = (token: string | null) => {
+  const onCaptchaChange = async (token: string | null) => {
     setCaptchaToken(token);
+    const result = await CaptchaVerification(token);
     setShowCaptcha(false);
   };
 
@@ -163,6 +165,7 @@ const SearchResults = () => {
   };
 
   const handleLoadMore = async () => {
+    setIsLoadMoreLoading(true); // Start loading
     const requestCount = parseInt(
       localStorage.getItem("requestCount") || "0",
       10,
@@ -178,6 +181,7 @@ const SearchResults = () => {
     setCurrentPage(currentPage + 10);
     localStorage.setItem("requestCount", (requestCount + 1).toString());
     setCurrentResults((prevResults) => [...prevResults, ...results]);
+    setIsLoadMoreLoading(false); // Start loading
   };
 
   const handleTextFieldChange = (
@@ -249,9 +253,19 @@ const SearchResults = () => {
           mb: 2,
         }}
       >
-        <Button variant="contained" color="primary" onClick={handleLoadMore}>
-          Load More
-        </Button>
+        <div>
+          {isLoadMoreLoading ? (
+            <CircularProgress />
+          ) : (
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleLoadMore}
+            >
+              Load More
+            </Button>
+          )}
+        </div>
       </Box>
       <AddKeyword
         open={open}

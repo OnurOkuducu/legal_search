@@ -10,7 +10,7 @@ import {
   TextField,
   IconButton,
 } from "@mui/material";
-import AddIcon from "@mui/icons-material/Add";
+import { CaptchaVerification } from "../../crud/functions";
 import ReCAPTCHA from "react-google-recaptcha";
 import FilterListIcon from "@mui/icons-material/FilterList"; // Import the filter icon
 
@@ -38,8 +38,9 @@ const SearchBar = ({
     }
   }, []);
 
-  const onCaptchaChange = (token: string | null) => {
+  const onCaptchaChange = async (token: string | null) => {
     setCaptchaToken(token);
+    const result = await CaptchaVerification(token);
     setShowCaptcha(false);
   };
 

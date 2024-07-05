@@ -10,6 +10,17 @@ import {
   Button,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
+import { styled } from "@mui/system";
+
+const StyledDialogContentText = styled(DialogContentText)`
+  font-size: 1.1rem;
+  color: #555;
+  line-height: 1.6;
+  text-align: justify;
+  padding: 16px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+`;
 
 interface KeywordDialogProps {
   open: boolean;
@@ -37,9 +48,6 @@ const AddKeyword: React.FC<KeywordDialogProps> = ({
         Anahtar Kelime Ekle
       </DialogTitle>
       <DialogContent sx={{ height: "400px", backgroundColor: "#F6F5F5" }}>
-        <DialogContentText>
-          Arama için anahtar kelimeleri girin.
-        </DialogContentText>
         {keywords.map((keyword, index) => (
           <TextField
             key={index}

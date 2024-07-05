@@ -90,3 +90,23 @@ export const SearchPageHandleNewSearh = async (
     console.error(error);
   }
 };
+
+export const CaptchaVerification = async (captcha: string | null) => {
+  const options = {
+    method: "POST",
+    url: backend_domain + "/check_captcha",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    data: {
+      captcha: captcha,
+    },
+  };
+
+  try {
+    const response = await axios.request(options);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+  }
+};
