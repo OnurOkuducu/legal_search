@@ -12,6 +12,8 @@ import {
   DialogContent,
   DialogTitle,
 } from "@mui/material";
+import { Circle } from "@mui/icons-material"; // Or any other icons you prefer
+
 import ReCAPTCHA from "react-google-recaptcha";
 
 import {
@@ -114,6 +116,16 @@ const SearchResults = () => {
     }
   }, [loading]);
 
+  const getColor = () => {
+    if (query.length < 20) {
+      return "red";
+    } else if (query.length < 40) {
+      return "yellow";
+    } else {
+      return "green";
+    }
+  };
+
   const onCaptchaChange = async (token: string | null) => {
     setCaptchaToken(token);
     const result = await CaptchaVerification(token);
@@ -214,6 +226,10 @@ const SearchResults = () => {
             endAdornment: (
               <InputAdornment position="end">
                 <Box display="flex" gap={1}>
+                  <IconButton style={{ padding: 0, margin: 0 }}>
+                    <Circle style={{ color: getColor(), fontSize: "2rem" }} />
+                  </IconButton>
+
                   <IconButton onClick={handleClickOpen}>
                     <FilterListIcon />
                   </IconButton>

@@ -154,7 +154,8 @@ export default function FAQ({ id }: FAQProps) {
               sx={{ maxWidth: { sm: "100%", md: "70%" }, color: "black" }}
             >
               Kullanıcı deneyimi birimimize
-              <Link> support@email.com </Link>'e mail atarak ulaşabilirsiniz.
+              <Link> customer_service@legalli.com.tr </Link>'e mail atarak
+              ulaşabilirsiniz.
             </Typography>
           </AccordionDetails>
         </Accordion>

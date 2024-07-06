@@ -10,6 +10,8 @@ import {
   TextField,
   IconButton,
 } from "@mui/material";
+import { Circle } from "@mui/icons-material"; // Or any other icons you prefer
+
 import { CaptchaVerification } from "../../crud/functions";
 import ReCAPTCHA from "react-google-recaptcha";
 import FilterListIcon from "@mui/icons-material/FilterList"; // Import the filter icon
@@ -37,6 +39,16 @@ const SearchBar = ({
       setShowCaptcha(true);
     }
   }, []);
+
+  const getColor = () => {
+    if (query.length < 20) {
+      return "red";
+    } else if (query.length < 40) {
+      return "yellow";
+    } else {
+      return "green";
+    }
+  };
 
   const onCaptchaChange = async (token: string | null) => {
     setCaptchaToken(token);
@@ -145,6 +157,9 @@ const SearchBar = ({
         <Button onClick={handleSearch} disabled={isSubmitting}>
           Emsal Karar Ara
         </Button>
+        <IconButton style={{ padding: 0, margin: 0 }}>
+          <Circle style={{ color: getColor(), fontSize: "3.5rem" }} />
+        </IconButton>
       </div>
       <AddKeyword
         open={open}
