@@ -17,4 +17,5 @@ export const Label = styled("label")`
   display: block;
   padding-bottom: 10px;
   text-transform: capitalize;
+  color: white;
 `;

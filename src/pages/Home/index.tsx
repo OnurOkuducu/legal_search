@@ -76,6 +76,16 @@ const Home = () => {
 
 export default Home;
 /*
+
+      <div id="contact">
+        <Contact
+          title={ContactContent.title}
+          content={ContactContent.text}
+          id="contact"
+        />
+      </div>
+
+      
       <ContentBlock
         direction="right"
         title={MissionContent.title}
