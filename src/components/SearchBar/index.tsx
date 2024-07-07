@@ -9,6 +9,7 @@ import {
   DialogTitle,
   TextField,
   IconButton,
+  Tooltip,
 } from "@mui/material";
 import { Circle } from "@mui/icons-material"; // Or any other icons you prefer
 
@@ -28,9 +29,16 @@ const SearchBar = ({
   const [captchaToken, setCaptchaToken] = useState<string | null>(null);
   const [showCaptcha, setShowCaptcha] = useState<boolean>(false);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-
+  const [openTip, setOpenTip] = useState<boolean>(false);
   const [open, setOpen] = useState(false);
   const [keywords, setKeywords] = useState([""]);
+
+  const handleTooltipOpen = () => {
+    setOpenTip(true);
+    setTimeout(() => {
+      setOpenTip(false);
+    }, 4000);
+  };
 
   useEffect(() => {
     const requestCountString = localStorage.getItem("requestCount") || "0";
@@ -40,13 +48,22 @@ const SearchBar = ({
     }
   }, []);
 
-  const getColor = () => {
-    if (query.length < 20) {
-      return "red";
-    } else if (query.length < 40) {
-      return "yellow";
+  const getColorAndMessage = () => {
+    if (query.length < 35) {
+      return {
+        color: "red",
+        message: `${query.length} karakter kullandınız, beklenen sonuç kalitesi: Düşük`,
+      };
+    } else if (query.length < 50) {
+      return {
+        color: "yellow",
+        message: `${query.length} karakter kullandınız, beklenen sonuç kalitesi: Orta`,
+      };
     } else {
-      return "green";
+      return {
+        color: "green",
+        message: `${query.length} karakter kullandınız, beklenen sonuç kalitesi: Yüksek`,
+      };
     }
   };
 
@@ -157,9 +174,21 @@ const SearchBar = ({
         <Button onClick={handleSearch} disabled={isSubmitting}>
           Emsal Karar Ara
         </Button>
-        <IconButton style={{ padding: 0, margin: 0 }}>
-          <Circle style={{ color: getColor(), fontSize: "3.5rem" }} />
-        </IconButton>
+        <Tooltip
+          open={openTip}
+          onClose={() => setOpenTip(false)}
+          title={getColorAndMessage().message}
+          arrow
+        >
+          <IconButton
+            style={{ padding: 0, margin: 0 }}
+            onClick={handleTooltipOpen}
+          >
+            <Circle
+              style={{ color: getColorAndMessage().color, fontSize: "3.5rem" }}
+            />
+          </IconButton>
+        </Tooltip>
       </div>
       <AddKeyword
         open={open}
